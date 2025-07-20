@@ -102,9 +102,14 @@ REST_FRAMEWORK = {
     'EXCEPTION_HANDLER': 'rest_framework.views.exception_handler'
 }
 
+
 DJOSER = {
     'LOGIN_FIELD': 'email',
+    'SERIALIZERS': {
+        'user_create': 'users.serializers.UserAuthSerializer',
+        'user': 'users.serializers.UserFullSerializer',
     }
+}
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
