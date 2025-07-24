@@ -1,28 +1,21 @@
-from django.contrib import admin
-from django.urls import include, path
-from django.views.generic import TemplateView
-
-from djoser.views import UserViewSet as DjoserUserViewSet
 from django.conf import settings
 from django.conf.urls.static import static
-
-from rest_framework import routers
-
-from users.views import UserViewSet
+from django.urls import path, include
+from users.views import UserAvatarAPIView, CustomUserViewSet
 from recept.views import RecipeViewSet, TagViewSet, IngredientViewSet
+from rest_framework.routers import DefaultRouter
+from djoser.views import UserViewSet
 
-
-router = routers.DefaultRouter()
-router.register(r'users', UserViewSet, basename='users')
+router = DefaultRouter()
 router.register(r'recipes', RecipeViewSet, basename='recipes')
 router.register(r'tags', TagViewSet, basename='tags')
 router.register(r'ingredients', IngredientViewSet, basename='ingredients')
+router.register(r'users', CustomUserViewSet, basename='users')
 
 urlpatterns = [
-    path('', include('djoser.urls')),
-    path('auth/', include('djoser.urls.authtoken')),
-
     path('', include(router.urls)),
+    path('auth/', include('djoser.urls.authtoken')),
+    path('users/me/avatar/', UserAvatarAPIView.as_view(), name='user-avatar'),
 ]
 
 if settings.DEBUG:

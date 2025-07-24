@@ -1,11 +1,10 @@
-
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from django.core.files.base import ContentFile
 
 from drf_extra_fields.fields import Base64ImageField
 
-from api.models import Follow
+from .models import Follow
 
 User = get_user_model()
 
@@ -51,3 +50,6 @@ class AvatarSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('avatar',)
+
+
+

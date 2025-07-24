@@ -1,10 +1,23 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 
-from .constants import MAX_NAME_LENGTH
+from .constants import MAX_NAME_LENGTH, MAX_LENGTH_TAGS
 
 User = get_user_model()
 
+
+class Tags(models.Model):
+    name = models.CharField(
+        unique=True,
+        max_length=MAX_LENGTH_TAGS,
+    )
+    slug = models.SlugField(
+        unique=True,
+        max_length=MAX_LENGTH_TAGS,
+        null=True,
+        allow_unicode=False,
+
+   )
 
 class Ingredient(models.Model):
     '''Модель ингридентов.'''
@@ -56,18 +69,41 @@ class RecipeIngredient(models.Model):
     )
     amount = models.DecimalField(decimal_places=2, max_digits=10)
 
-class Favorite(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='favorites', verbose_name='<UNK>')
-    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name='favorites')
-
-    class Meta:
-        unique_together = ('user', 'recipe')
-
 
 class ShoppingCart(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='shopping_carts',
+        verbose_name='Пользователь'
+    )
     recipe = models.ForeignKey(
         Recipe,
         on_delete=models.CASCADE,
         related_name='shopping_cart'
     )
+
+    class Meta:
+        verbose_name = 'Корзина покупок'
+        verbose_name_plural = 'Корзины покупок'
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user', 'recipe'],
+                name='unique_shopping_cart_recipe'
+            )
+        ]
+
+
+class Favorite(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE,related_name='favorites', verbose_name='Пользователь')
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name='favorited_by', verbose_name='Рецепт')
+
+    class Meta:
+        verbose_name = 'Избранное'
+        verbose_name_plural = 'Избранные рецепты'
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user', 'recipe'],
+                name='unique_favorite_recipe'
+            )
+        ]
