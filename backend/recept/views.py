@@ -1,4 +1,4 @@
-from django.http import HttpResponse  # ✅ Правильный класс
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.db.models import Sum, F
 from django.contrib.auth import get_user_model
@@ -6,7 +6,9 @@ from rest_framework import filters, status, viewsets
 from rest_framework.views import APIView
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
+from rest_framework.viewsets import ReadOnlyModelViewSet
 from rest_framework.response import Response
+from rest_framework.exceptions import PermissionDenied
 from django_filters.rest_framework import DjangoFilterBackend
 
 from .models import Recipe, Tag, Ingredient, ShoppingCart, Favorite, RecipeIngredient
@@ -58,6 +60,17 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
+
+    def perform_update(self, serializer):
+        recipe = self.get_object()
+        if self.request.user != recipe.author:
+            raise PermissionDenied('Вы не можете изменить чужой рецепт.')
+        serializer.save()
+
+    def perform_destroy(self, instance):
+        if self.request.user != instance.author:
+            raise PermissionDenied('Вы не можете удалить чужой рецепт.')
+        instance.delete()
 
     @action(detail=True, methods=['post', 'delete'], permission_classes=[IsAuthenticated])
     def favorite(self, request, pk=None):
@@ -130,7 +143,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         return response
 
 
-class TagViewSet(viewsets.ModelViewSet):
+class TagViewSet(ReadOnlyModelViewSet):
     queryset = Tag.objects.all().order_by('id')
     serializer_class = TagSerializer
     pagination_class = None
@@ -147,7 +160,4 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
         name = self.request.query_params.get('name', None)
         if name:
             queryset = queryset.filter(name__istartswith=name)
-            queryset = queryset | Ingredient.objects.filter(
-                name__icontains=name
-            )
         return queryset.distinct()

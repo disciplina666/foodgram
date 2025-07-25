@@ -1,12 +1,14 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.viewsets import ViewSet
 from djoser.views import UserViewSet as DjoserUserViewSet
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from users.serializers import AvatarSerializer
 from recept.serializers import SubscriptionSerializer
@@ -31,6 +33,23 @@ class UserAvatarAPIView(APIView):
 
 
 class CustomUserViewSet(DjoserUserViewSet):
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def get_permissions(self):
+        if self.action in ['list', 'create']:
+            return [permission() for permission in [AllowAny]]
+        return super().get_permissions()
+
+    @action(["get"], detail=False)
+    def me(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return Response(
+                {"detail": "Учетные данные не были предоставлены."},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+        return super().me(request, *args, **kwargs)
+
+
     @action(detail=False, methods=['get'], permission_classes=[IsAuthenticated])
     def subscriptions(self, request):
         queryset = User.objects.filter(followers__user=request.user).distinct()
