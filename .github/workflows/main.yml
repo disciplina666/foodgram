@@ -99,7 +99,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           passphrase: ${{ secrets.SSH_PASSPHRASE }}
           script: |
-            rm -f /home/yc-user/foodgram/docker-compose.production.yml
+            sudo rm -f /home/yc-user/foodgram/docker-compose.production.yml
 
       - name: Copy docker-compose.production.yml via ssh
         uses: appleboy/scp-action@master
