@@ -1,0 +1,47 @@
+volumes:
+  pg_data:
+  static:
+  media:
+
+services:
+  db:
+    image: postgres:13
+    env_file: .env
+    restart: always
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    image: disciplina666/foodgram_backend
+    env_file: .env
+    restart: always
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - static:/backend_static
+      - media:/app/media
+
+  frontend:
+    image: disciplina666/foodgram_frontend
+    env_file: .env
+    command: cp -r /app/build/. /frontend_static/
+    volumes:
+      - static:/frontend_static
+
+  gateway:
+    image: disciplina666/foodgram_gateway
+    env_file: .env
+    restart: always
+    depends_on:
+      - backend
+    ports:
+      - 9000:80
+    volumes:
+      - static:/staticfiles
+      - media:/app/media
