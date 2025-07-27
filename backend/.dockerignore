@@ -1,5 +1,13 @@
+**/migrations/
+**/__pycache__/
+*.sqlite3
+.env
 .venv
 .git
 .idea
-.env
+*.log
+*.pyc
+*.pyo
+*.pyd
+.DS_Store
 db.sqlite3
