@@ -32,7 +32,7 @@ services:
        - static:/staticfiles
        - media:/app/media
     ports:
-      - 9000:80
+      - 9010:80
     depends_on:
       - backend
     restart: always
