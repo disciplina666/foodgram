@@ -7,18 +7,31 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Recept',
+            name="Recept",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=256, verbose_name='Название')),
-                ('image', models.ImageField(upload_to='recepts', verbose_name='Изображение')),
-                ('description', models.TextField(verbose_name='Описание рецепта')),
-                ('cooking_time', models.IntegerField(verbose_name='Время приготовления')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=256, verbose_name="Название")),
+                (
+                    "image",
+                    models.ImageField(upload_to="recepts", verbose_name="Изображение"),
+                ),
+                ("description", models.TextField(verbose_name="Описание рецепта")),
+                (
+                    "cooking_time",
+                    models.IntegerField(verbose_name="Время приготовления"),
+                ),
             ],
         ),
     ]
