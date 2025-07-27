@@ -13,7 +13,7 @@ class User(AbstractUser):
         unique=True,
         max_length=MAX_LENGTH_EMAIL,
         validators=[MaxLengthValidator(MAX_LENGTH_EMAIL)],
-        verbose_name="Электронная почта пользователя",
+        verbose_name="Электронная почта",
         help_text="Введите свой электронный адрес",
     )
 
@@ -29,8 +29,8 @@ class User(AbstractUser):
             RegexValidator(
                 regex=r"^[\w.@+-]+$",
                 message=(
-                    "Username пользователя может содержать только "
-                    "буквы, цифры и @/./+/-/_ символы."
+                    "Имя пользователя может содержать только "
+                    "буквы, цифры и символы @/./+/-/_"
                 ),
             ),
         ],
@@ -53,10 +53,14 @@ class User(AbstractUser):
     )
 
     password = models.CharField(
-        max_length=MAX_PASSWORD_LENGTH, verbose_name="Пароль"
+        max_length=MAX_PASSWORD_LENGTH,
+        verbose_name="Пароль",
     )
+
     avatar = models.ImageField(
-        blank=True, null=True, verbose_name="Изображение пользователя"
+        blank=True,
+        null=True,
+        verbose_name="Аватар",
     )
 
     class Meta:
@@ -69,23 +73,25 @@ class User(AbstractUser):
 
 
 class Follow(models.Model):
+    """Модель подписок."""
+
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         related_name="follower",
-        verbose_name="Пользователь",
+        verbose_name="Подписчик",
     )
     following = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name="followers",
-        verbose_name="Подписчик",
+        related_name="following",
+        verbose_name="Автор",
     )
 
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=["following", "user"], name="unique_follow"
+                fields=["user", "following"], name="unique_follow"
             ),
             models.CheckConstraint(
                 check=~models.Q(user=models.F("following")),
@@ -93,7 +99,7 @@ class Follow(models.Model):
             ),
         ]
         verbose_name = "Подписка"
-        verbose_name_plural = "Подписчики"
+        verbose_name_plural = "Подписки"
 
     def __str__(self):
-        return f"Подписчики пользователя: {self.user}"
+        return f"{self.user} подписан на {self.following}"
