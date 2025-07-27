@@ -5,13 +5,16 @@ volumes:
   static:
 
 services:
-  db:
+  food_db:
     image: postgres:13
     volumes:
       - pg_data:/var/lib/postgresql/data
+    env_file: .env
   backend:
     build: ./backend/
     env_file: .env
+    depends_on:
+      - food_db
   frontend:
     env_file: .env
     build: ./frontend/
@@ -22,6 +25,6 @@ services:
     build: ./nginx/
     env_file: .env
     ports:
-      - 9000:80
+      - 9010:80
     volumes:
       - static:/static
