@@ -121,6 +121,10 @@ DJOSER = {
     "HIDE_USERS": False,
 }
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://foodgram67.work.gd",
+]
+
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
