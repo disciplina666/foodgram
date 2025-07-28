@@ -60,7 +60,7 @@ jobs:
         with:
           context: ./frontend/
           push: true
-          tags: disciplina666/foogdram_frontend:latest
+          tags: disciplina666/foodgram_frontend:latest
 
   build_gateway_and_push_to_docker_hub:
     name: Push gateway Docker image to DockerHub
