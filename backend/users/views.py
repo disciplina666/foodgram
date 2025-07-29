@@ -67,7 +67,8 @@ class CustomUserViewSet(DjoserUserViewSet):
         )
         return Response(serializer.data)
 
-    @action(detail=True, methods=["post"], permission_classes=[IsAuthenticated])
+    @action(detail=True, methods=["post"], permission_classes=[IsAuthenticated]
+            )
     def subscribe(self, request, id=None):
         author = get_object_or_404(User, pk=id)
         serializer = SubscriptionCreateSerializer(
