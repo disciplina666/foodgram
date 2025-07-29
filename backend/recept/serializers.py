@@ -1,5 +1,7 @@
 from django.contrib.auth import get_user_model
 from drf_extra_fields.fields import Base64ImageField
+from rest_framework import status
+from rest_framework.response import Response
 from rest_framework import serializers
 
 from users.models import Follow
@@ -196,11 +198,43 @@ class FavoriteSerializer(serializers.ModelSerializer):
         model = Favorite
         fields = ["user", "recipe"]
 
+    def validate(self, data):
+        """Проверка, что рецепт ещё не в избранном."""
+        if Favorite.objects.filter(
+                user=data["user"], recipe=data["recipe"]).exists():
+            raise serializers.ValidationError("Рецепт уже в избранном.")
+        return data
+
+    def create(self, validated_data):
+        """Создание записи в избранном."""
+        return Favorite.objects.create(**validated_data)
+
+    def destroy(self, instance):
+        """Удаление из избранного."""
+        instance.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 class ShoppingCartSerializer(serializers.ModelSerializer):
     class Meta:
         model = ShoppingCart
         fields = ["user", "recipe"]
+
+    def validate(self, data):
+        """Проверка, что рецепт ещё не в корзине."""
+        if ShoppingCart.objects.filter(
+                user=data["user"], recipe=data["recipe"]).exists():
+            raise serializers.ValidationError("Рецепт уже в корзине.")
+        return data
+
+    def create(self, validated_data):
+        """Создание записи в корзине."""
+        return ShoppingCart.objects.create(**validated_data)
+
+    def destroy(self, instance):
+        """Удаление из корзины."""
+        instance.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class RecipeShortSerializer(serializers.ModelSerializer):

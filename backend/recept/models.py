@@ -19,7 +19,6 @@ class Tag(models.Model):
         max_length=MAX_LENGTH_TAGS,
         unique=True,
         verbose_name="SLUG",
-        null=True,
         allow_unicode=False,
     )
 

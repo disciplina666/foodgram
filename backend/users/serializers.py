@@ -50,11 +50,8 @@ class UserFullSerializer(serializers.ModelSerializer):
 
     def get_avatar(self, obj):
         request = self.context.get("request")
-        if request and obj.avatar and hasattr(obj.avatar, "url"):
-            try:
-                return request.build_absolute_uri(obj.avatar.url)
-            except Exception:
-                return None
+        if request and obj.avatar:
+            return request.build_absolute_uri(obj.avatar.url)
         return None
 
     def get_is_subscribed(self, obj):
@@ -71,3 +68,23 @@ class AvatarSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ("avatar",)
+
+
+class SubscriptionCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Follow
+        fields = ("user", "following")
+
+    def validate(self, data):
+        user = data["user"]
+        following = data["following"]
+
+        if user == following:
+            raise serializers.ValidationError(
+                "Нельзя подписаться на самого себя."
+            )
+
+        if Follow.objects.filter(user=user, following=following).exists():
+            raise serializers.ValidationError("Вы уже подписаны.")
+
+        return data

@@ -12,7 +12,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from recept.serializers import SubscriptionSerializer
-from users.serializers import AvatarSerializer
+from users.serializers import AvatarSerializer, SubscriptionCreateSerializer
 
 from .models import Follow
 
@@ -67,40 +67,30 @@ class CustomUserViewSet(DjoserUserViewSet):
         )
         return Response(serializer.data)
 
-    @action(detail=True, methods=["post"],
-            permission_classes=[IsAuthenticated])
+    @action(detail=True, methods=["post"], permission_classes=[IsAuthenticated])
     def subscribe(self, request, id=None):
         author = get_object_or_404(User, pk=id)
-        user = request.user
-
-        if author == user:
-            return Response(
-                {"errors": "Нельзя подписаться на самого себя."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        if Follow.objects.filter(user=user, following=author).exists():
-            return Response(
-                {"errors": "Вы уже подписаны."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        Follow.objects.create(user=user, following=author)
-        serializer = SubscriptionSerializer(
-            author, context={"request": request}
+        serializer = SubscriptionCreateSerializer(
+            data={"user": request.user.id, "following": author.id}
         )
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(
+            SubscriptionSerializer(author, context={"request": request}).data,
+            status=status.HTTP_201_CREATED
+        )
 
     @subscribe.mapping.delete
     def unsubscribe(self, request, id=None):
         author = get_object_or_404(User, pk=id)
-        follow = Follow.objects.filter(user=request.user, following=author)
+        deleted = Follow.objects.filter(
+            user=request.user,
+            following=author
+        ).delete()
 
-        if not follow.exists():
+        if not deleted:
             return Response(
                 {"errors": "Вы не подписаны на этого пользователя."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
-
-        follow.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)

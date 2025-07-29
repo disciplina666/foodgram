@@ -52,14 +52,9 @@ class User(AbstractUser):
         verbose_name="Фамилия",
     )
 
-    password = models.CharField(
-        max_length=MAX_PASSWORD_LENGTH,
-        verbose_name="Пароль",
-    )
-
     avatar = models.ImageField(
+        upload_to="avatars",
         blank=True,
-        null=True,
         verbose_name="Аватар",
     )
 
