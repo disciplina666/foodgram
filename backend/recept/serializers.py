@@ -1,8 +1,7 @@
 from django.contrib.auth import get_user_model
 from drf_extra_fields.fields import Base64ImageField
-from rest_framework import status
+from rest_framework import serializers, status
 from rest_framework.response import Response
-from rest_framework import serializers
 
 from users.models import Follow
 from users.serializers import UserFullSerializer

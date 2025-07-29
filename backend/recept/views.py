@@ -21,13 +21,13 @@ from .models import (
     Tag,
 )
 from .serializers import (
+    FavoriteSerializer,
     IngredientSerializer,
     RecipeReadSerializer,
     RecipeShortSerializer,
     RecipeWriteSerializer,
-    TagSerializer,
-    FavoriteSerializer,
     ShoppingCartSerializer,
+    TagSerializer,
 )
 
 
