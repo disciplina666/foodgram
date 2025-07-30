@@ -12,9 +12,11 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from recept.serializers import SubscriptionSerializer
-from users.serializers import AvatarSerializer, SubscriptionCreateSerializer
-
-from .models import Follow
+from users.serializers import (
+    AvatarSerializer,
+    SubscriptionCreateSerializer,
+    SubscriptionDeleteSerializer,
+)
 
 
 User = get_user_model()
@@ -55,43 +57,42 @@ class CustomUserViewSet(DjoserUserViewSet):
     @action(detail=False, methods=["get"],
             permission_classes=[IsAuthenticated])
     def subscriptions(self, request):
-        queryset = User.objects.filter(followers__user=request.user).distinct()
+        queryset = User.objects.filter(subscribers__user=request.user)
+
         page = self.paginate_queryset(queryset)
         if page is not None:
             serializer = SubscriptionSerializer(
                 page, many=True, context={"request": request}
             )
             return self.get_paginated_response(serializer.data)
+
         serializer = SubscriptionSerializer(
             queryset, many=True, context={"request": request}
         )
         return Response(serializer.data)
 
-    @action(detail=True, methods=["post"], permission_classes=[IsAuthenticated]
-            )
+    @action(detail=True, methods=["post"],
+            permission_classes=[IsAuthenticated])
     def subscribe(self, request, id=None):
-        author = get_object_or_404(User, pk=id)
+        following = get_object_or_404(User, pk=id)
         serializer = SubscriptionCreateSerializer(
-            data={"user": request.user.id, "following": author.id}
+            data={"following": following.id},
+            context={"request": request}
         )
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(
-            SubscriptionSerializer(author, context={"request": request}).data,
+            SubscriptionSerializer(
+                following, context={"request": request}).data,
             status=status.HTTP_201_CREATED
         )
 
     @subscribe.mapping.delete
     def unsubscribe(self, request, id=None):
-        author = get_object_or_404(User, pk=id)
-        deleted = Follow.objects.filter(
-            user=request.user,
-            following=author
-        ).delete()
-
-        if not deleted:
-            return Response(
-                {"errors": "Вы не подписаны на этого пользователя."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+        serializer = SubscriptionDeleteSerializer(
+            data={'following_id': id},
+            context={'request': request}
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)

@@ -1,18 +1,21 @@
 import os
 from pathlib import Path
 
+from dotenv import load_dotenv
+
+load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.getenv('SECRET_KEY', 'rtytfgujhkl3o207896tyguashj2(2)')
+SECRET_KEY = os.getenv("SECRET_KEY", "rtytfgujhkl3o207896tyguashj2(2)")
 
-DEBUG = os.getenv('DEBUG', 'False')
+DEBUG = (os.environ.get('DEBUG') == 'True')
+
 
 ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
 
 
 INSTALLED_APPS = [
-    "users.apps.UsersConfig",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -23,6 +26,7 @@ INSTALLED_APPS = [
     "rest_framework.authtoken",
     "djoser",
     "django_filters",
+    "users.apps.UsersConfig",
     "api.apps.ApiConfig",
     "recept.apps.ReceptConfig",
 ]
@@ -125,10 +129,10 @@ CSRF_TRUSTED_ORIGINS = [
     "https://foodgram67.work.gd",
 ]
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
 
-LANGUAGE_CODE = 'ru-ru'
+LANGUAGE_CODE = "ru-ru"
 
 TIME_ZONE = "UTC"
 
@@ -139,7 +143,7 @@ USE_L10N = True
 USE_TZ = True
 
 
-STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / 'collected_static'
+STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR / "collected_static"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"

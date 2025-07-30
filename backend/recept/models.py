@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.core.validators import MinValueValidator
 from django.db import models
 
 from .constants import MAX_LENGTH_TAGS, MAX_NAME_LENGTH
@@ -84,7 +85,8 @@ class Recipe(models.Model):
         related_name="recipes",
         verbose_name="Теги",
     )
-    cooking_time = models.PositiveIntegerField(
+    cooking_time = models.PositiveSmallIntegerField(
+        validators=[MinValueValidator(1)],
         verbose_name="Время приготовления (в минутах)",
     )
 
@@ -116,6 +118,7 @@ class RecipeIngredient(models.Model):
         max_digits=10,
         decimal_places=2,
         verbose_name="Количество",
+        validators=[MinValueValidator(0.1)]
     )
 
     class Meta:
