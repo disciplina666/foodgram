@@ -151,7 +151,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
         content = self.shopping_data(ingredients)
         response = HttpResponse(content, content_type='text/plain')
-        response['Content-Disposition'] = 'attachment; filename="shopping_list.txt"'
+        response[
+            'Content-Disposition'] = 'attachment; filename="shopping_list.txt"'
         return response
 
     def shopping_data(self, ingredients):
