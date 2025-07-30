@@ -22,7 +22,7 @@ from .models import (
     ShoppingCart,
     Tag,
 )
-from .permissions import IsAuthorOrReadOnly
+from api.permissions import IsAuthorOrReadOnly
 from .serializers import (
     FavoriteSerializer,
     IngredientSerializer,
