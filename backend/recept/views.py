@@ -13,6 +13,8 @@ from rest_framework.permissions import (
 from rest_framework.response import Response
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
+from api.permissions import IsAuthorOrReadOnly
+
 from .filters import RecipeFilter
 from .models import (
     Favorite,
@@ -22,7 +24,6 @@ from .models import (
     ShoppingCart,
     Tag,
 )
-from api.permissions import IsAuthorOrReadOnly
 from .serializers import (
     FavoriteSerializer,
     IngredientSerializer,
