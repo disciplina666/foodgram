@@ -4,15 +4,15 @@ from recept.models import Recipe
 
 
 class RecipeFilter(filters.FilterSet):
-    author = filters.NumberFilter(field_name="author__id")
-    tags = filters.AllValuesMultipleFilter(field_name="tags__slug")
-    is_favorited = filters.BooleanFilter(method="filter_is_favorited")
+    author = filters.NumberFilter(field_name='author__id')
+    tags = filters.AllValuesMultipleFilter(field_name='tags__slug')
+    is_favorited = filters.BooleanFilter(method='filter_is_favorited')
     is_in_shopping_cart = filters.BooleanFilter(
-        method="filter_in_shopping_cart")
+        method='filter_in_shopping_cart')
 
     class Meta:
         model = Recipe
-        fields = ["author", "tags", "is_favorited", "is_in_shopping_cart"]
+        fields = ['author', 'tags', 'is_favorited', 'is_in_shopping_cart']
 
     def filter_is_favorited(self, queryset, name, value):
         user = self.request.user

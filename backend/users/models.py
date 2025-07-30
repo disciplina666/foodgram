@@ -7,94 +7,94 @@ from .validators import validate_username
 
 
 class User(AbstractUser):
-    """Модель пользователя."""
+    '''Модель пользователя.'''
 
     email = models.EmailField(
         unique=True,
         max_length=MAX_LENGTH_EMAIL,
         validators=[MaxLengthValidator(MAX_LENGTH_EMAIL)],
-        verbose_name="Электронная почта",
-        help_text="Введите свой электронный адрес",
+        verbose_name='Электронная почта',
+        help_text='Введите свой электронный адрес',
     )
 
     username = models.CharField(
         max_length=MAX_LENGTH_NAME,
         unique=True,
         help_text=(
-            "Обязательное поле. 150 символов или меньше. "
-            "Только буквы, цифры и @/./+/-/_ символы."
+            'Обязательное поле. 150 символов или меньше. '
+            'Только буквы, цифры и @/./+/-/_ символы.'
         ),
         validators=[
             validate_username,
             RegexValidator(
-                regex=r"^[\w.@+-]+$",
+                regex=r'^[\w.@+-]+$',
                 message=(
-                    "Имя пользователя может содержать только "
-                    "буквы, цифры и символы @/./+/-/_"
+                    'Имя пользователя может содержать только '
+                    'буквы, цифры и символы @/./+/-/_'
                 ),
             ),
         ],
         error_messages={
-            "unique": "Пользователь с таким именем уже существует.",
+            'unique': 'Пользователь с таким именем уже существует.',
         },
-        verbose_name="Имя пользователя",
+        verbose_name='Имя пользователя',
     )
 
     first_name = models.CharField(
         max_length=MAX_LENGTH_NAME,
         validators=[MaxLengthValidator(MAX_LENGTH_NAME)],
-        verbose_name="Имя",
+        verbose_name='Имя',
     )
 
     last_name = models.CharField(
         max_length=MAX_LENGTH_NAME,
         validators=[MaxLengthValidator(MAX_LENGTH_NAME)],
-        verbose_name="Фамилия",
+        verbose_name='Фамилия',
     )
 
     avatar = models.ImageField(
-        upload_to="avatars",
+        upload_to='avatars',
         blank=True,
-        verbose_name="Аватар",
+        verbose_name='Аватар',
     )
 
     class Meta:
-        verbose_name = "Пользователь"
-        verbose_name_plural = "Пользователи"
-        ordering = ("username",)
+        verbose_name = 'Пользователь'
+        verbose_name_plural = 'Пользователи'
+        ordering = ('username',)
 
     def __str__(self):
         return self.username
 
 
 class Follow(models.Model):
-    """Модель подписок."""
+    '''Модель подписок.'''
 
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name="subscriptions",
-        verbose_name="Подписчик",
+        related_name='subscriptions',
+        verbose_name='Подписчик',
     )
     following = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name="subscribers",
-        verbose_name="Автор",
+        related_name='subscribers',
+        verbose_name='Автор',
     )
 
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=["user", "following"], name="unique_follow"
+                fields=['user', 'following'], name='unique_follow'
             ),
             models.CheckConstraint(
-                check=~models.Q(user=models.F("following")),
-                name="user_cannot_follow_himself",
+                check=~models.Q(user=models.F('following')),
+                name='user_cannot_follow_himself',
             ),
         ]
-        verbose_name = "Подписка"
-        verbose_name_plural = "Подписки"
+        verbose_name = 'Подписка'
+        verbose_name_plural = 'Подписки'
 
     def __str__(self):
-        return f"{self.user} подписан на {self.following}"
+        return f'{self.user} подписан на {self.following}'

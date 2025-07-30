@@ -8,26 +8,26 @@ from .models import Follow, User
 class UserAdmin(BaseUserAdmin):
     model = User
     list_display = (
-        "id", "username", "email", "first_name", "last_name", "is_staff"
+        'id', 'username', 'email', 'first_name', 'last_name', 'is_staff'
     )
-    list_filter = ("is_staff", "is_superuser", "is_active")
-    search_fields = ("username", "email")
-    ordering = ("username",)
+    list_filter = ('is_staff', 'is_superuser', 'is_active')
+    search_fields = ('username', 'email')
+    ordering = ('username',)
     fieldsets = (
-        (None, {"fields": ("username", "password")}),
+        (None, {'fields': ('username', 'password')}),
         (
-            "Личная информация",
-            {"fields": ("first_name", "last_name", "email", "avatar")},
+            'Личная информация',
+            {'fields': ('first_name', 'last_name', 'email', 'avatar')},
         ),
         (
-            "Права доступа",
+            'Права доступа',
             {
-                "fields": (
-                    "is_active",
-                    "is_staff",
-                    "is_superuser",
-                    "groups",
-                    "user_permissions",
+                'fields': (
+                    'is_active',
+                    'is_staff',
+                    'is_superuser',
+                    'groups',
+                    'user_permissions',
                 )
             },
         ),
@@ -36,10 +36,10 @@ class UserAdmin(BaseUserAdmin):
         (
             None,
             {
-                "classes": ("wide",),
-                "fields": (
-                    "username",
-                    "email",
+                'classes': ('wide',),
+                'fields': (
+                    'username',
+                    'email',
                 ),
             },
         ),
@@ -48,6 +48,6 @@ class UserAdmin(BaseUserAdmin):
 
 @admin.register(Follow)
 class FollowAdmin(admin.ModelAdmin):
-    list_display = ("id", "user", "following")
-    search_fields = ("user__username", "following__username")
-    list_filter = ("user",)
+    list_display = ('id', 'user', 'following')
+    search_fields = ('user__username', 'following__username')
+    list_filter = ('user',)
