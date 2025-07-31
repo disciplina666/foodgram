@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.db.models import Count
 from django.shortcuts import get_object_or_404
 from djoser.views import UserViewSet as DjoserUserViewSet
 from rest_framework import status
@@ -11,11 +12,10 @@ from rest_framework.permissions import (
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from recept.serializers import SubscriptionSerializer
-from users.serializers import (
+from api.serializers.recepie import SubscriptionSerializer
+from api.serializers.users import (
     AvatarSerializer,
     SubscriptionCreateSerializer,
-    SubscriptionDeleteSerializer,
 )
 
 
@@ -57,7 +57,9 @@ class CustomUserViewSet(DjoserUserViewSet):
     @action(detail=False, methods=['get'],
             permission_classes=[IsAuthenticated])
     def subscriptions(self, request):
-        queryset = User.objects.filter(subscribers__user=request.user)
+        queryset = User.objects.filter(
+            subscribers__user=request.user).annotate(
+                recipes_count=Count('recipes'))
 
         page = self.paginate_queryset(queryset)
         if page is not None:
@@ -89,10 +91,14 @@ class CustomUserViewSet(DjoserUserViewSet):
 
     @subscribe.mapping.delete
     def unsubscribe(self, request, id=None):
-        serializer = SubscriptionDeleteSerializer(
-            data={'following_id': id},
-            context={'request': request}
-        )
-        serializer.is_valid(raise_exception=True)
-        serializer.delete()
+        deleted_count, _ = request.user.subscriptions.filter(
+            following__id=id
+        ).delete()
+
+        if deleted_count == 0:
+            return Response(
+                {'errors': 'Вы не были подписаны на этого пользователя.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
         return Response(status=status.HTTP_204_NO_CONTENT)

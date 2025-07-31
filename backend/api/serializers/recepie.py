@@ -2,10 +2,8 @@ from django.contrib.auth import get_user_model
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 
-from users.models import Follow
-from users.serializers import UserFullSerializer
-
-from .models import (
+from api.serializers.users import UserFullSerializer
+from recept.models import (
     Favorite,
     Ingredient,
     Recipe,
@@ -13,6 +11,7 @@ from .models import (
     ShoppingCart,
     Tag,
 )
+from users.models import Follow
 
 
 User = get_user_model()
@@ -221,7 +220,7 @@ class RecipeShortSerializer(serializers.ModelSerializer):
 
 class SubscriptionSerializer(serializers.ModelSerializer):
     recipes = serializers.SerializerMethodField()
-    recipes_count = serializers.SerializerMethodField()
+    recipes_count = serializers.IntegerField(default=0)
     is_subscribed = serializers.SerializerMethodField()
     avatar = serializers.SerializerMethodField()
 
@@ -247,9 +246,6 @@ class SubscriptionSerializer(serializers.ModelSerializer):
         if user is None or user.is_anonymous:
             return False
         return Follow.objects.filter(user=user, following=obj).exists()
-
-    def get_recipes_count(self, obj):
-        return obj.recipes.count()
 
     def get_recipes(self, obj):
         request = self.context.get('request')

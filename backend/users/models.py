@@ -7,14 +7,13 @@ from .validators import validate_username
 
 
 class User(AbstractUser):
-    '''Модель пользователя.'''
+    """Модель пользователя."""
 
     email = models.EmailField(
         unique=True,
         max_length=MAX_LENGTH_EMAIL,
         validators=[MaxLengthValidator(MAX_LENGTH_EMAIL)],
         verbose_name='Электронная почта',
-        help_text='Введите свой электронный адрес',
     )
 
     username = models.CharField(
@@ -68,7 +67,7 @@ class User(AbstractUser):
 
 
 class Follow(models.Model):
-    '''Модель подписок.'''
+    """Модель подписок."""""
 
     user = models.ForeignKey(
         User,

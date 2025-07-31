@@ -10,9 +10,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv('SECRET_KEY', 'rtytfgujhkl3o207896tyguashj2(2)')
 
-DEBUG = (os.environ.get('DEBUG') == 'True')
+DEBUG = os.environ.get('DEBUG') == 'True'
 
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(',')
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
 
 
 INSTALLED_APPS = [
@@ -66,13 +66,13 @@ AUTH_USER_MODEL = 'users.User'
 
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('POSTGRES_DB', 'foodgram'),
-        'USER': os.getenv('POSTGRES_USER', 'django_user'),
-        'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'mysecretpassword'),
-        'HOST': os.getenv('DB_HOST', 'food_db'),
-        'PORT': os.getenv('DB_PORT', 5432),
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.getenv("POSTGRES_DB", "foodgram"),
+        "USER": os.getenv("POSTGRES_USER", "django_user"),
+        "PASSWORD": os.getenv("POSTGRES_PASSWORD", "mysecretpassword"),
+        "HOST": os.getenv("DB_HOST", "food_db"),
+        "PORT": os.getenv("DB_PORT", 5432),
     }
 }
 
@@ -99,7 +99,7 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticatedOrReadOnly',
     ),
-    'DEFAULT_PAGINATION_CLASS': 'recept.paginations.LimitPageNumberPagination',
+    'DEFAULT_PAGINATION_CLASS': 'api.paginations.LimitPageNumberPagination',
     'PAGE_SIZE': 10,
     'EXCEPTION_HANDLER': 'rest_framework.views.exception_handler',
 }
@@ -110,9 +110,9 @@ DJOSER = {
     ],
     'LOGIN_FIELD': 'email',
     'SERIALIZERS': {
-        'user_create': 'users.serializers.UserAuthSerializer',
-        'user': 'users.serializers.UserFullSerializer',
-        'current_user': 'users.serializers.UserFullSerializer',
+        'user_create': 'api.serializers.users.UserAuthSerializer',
+        'user': 'api.serializers.users.UserFullSerializer',
+        'current_user': 'api.serializers.users.UserFullSerializer',
     },
     'PERMISSIONS': {
         'user': ['rest_framework.permissions.IsAuthenticatedOrReadOnly'],

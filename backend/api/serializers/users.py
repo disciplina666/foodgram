@@ -1,9 +1,8 @@
 from django.contrib.auth import get_user_model
-from django.http import Http404
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 
-from .models import Follow
+from users.models import Follow
 
 
 User = get_user_model()
@@ -74,28 +73,3 @@ class SubscriptionCreateSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         user = self.context['request'].user
         return Follow.objects.create(user=user, **validated_data)
-
-
-class SubscriptionDeleteSerializer(serializers.Serializer):
-    following_id = serializers.IntegerField()
-
-    def validate_following_id(self, value):
-        if not User.objects.filter(pk=value).exists():
-            raise Http404('Пользователь не найден.')
-        return value
-
-    def validate(self, data):
-        user = self.context['request'].user
-        if not Follow.objects.filter(user=user, following_id=data[
-                'following_id']).exists():
-            raise serializers.ValidationError(
-                {'errors': {'non_field_errors': [
-                    'Вы не подписаны на этого пользователя.']}}
-            )
-        return data
-
-    def delete(self):
-        Follow.objects.filter(
-            user=self.context['request'].user,
-            following_id=self.validated_data['following_id']
-        ).delete()

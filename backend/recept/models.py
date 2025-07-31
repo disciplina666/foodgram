@@ -9,7 +9,7 @@ User = get_user_model()
 
 
 class Tag(models.Model):
-    '''Модель тега.'''
+    """Модель тега."""
 
     name = models.CharField(
         max_length=MAX_NAME_LENGTH,
@@ -24,9 +24,9 @@ class Tag(models.Model):
     )
 
     class Meta:
+        ordering = ['id']
         verbose_name = 'Тег'
         verbose_name_plural = 'Теги'
-        ordering = ('name',)
 
     def __str__(self):
         return self.name
@@ -55,7 +55,7 @@ class Ingredient(models.Model):
 
 
 class Recipe(models.Model):
-    '''Модель рецепта.'''
+    """Модель рецепта."""
 
     author = models.ForeignKey(
         User,
@@ -100,7 +100,7 @@ class Recipe(models.Model):
 
 
 class RecipeIngredient(models.Model):
-    '''Связь рецепта и ингредиента с указанием количества.'''
+    """Связь рецепта и ингредиента с указанием количества."""
 
     recipe = models.ForeignKey(
         Recipe,
@@ -114,11 +114,9 @@ class RecipeIngredient(models.Model):
         related_name='recipe_links',
         verbose_name='Ингредиент',
     )
-    amount = models.DecimalField(
-        max_digits=10,
-        decimal_places=2,
+    amount = models.PositiveSmallIntegerField(
         verbose_name='Количество',
-        validators=[MinValueValidator(0.1)]
+        validators=[MinValueValidator(1)]
     )
 
     class Meta:

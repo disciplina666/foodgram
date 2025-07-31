@@ -6,7 +6,6 @@ import django.core.validators
 from django.db import migrations, models
 import django.db.models.deletion
 import django.utils.timezone
-import users.validators
 
 
 class Migration(migrations.Migration):
@@ -86,7 +85,6 @@ class Migration(migrations.Migration):
                         max_length=150,
                         unique=True,
                         validators=[
-                            users.validators.validate_username,
                             django.core.validators.RegexValidator(
                                 message="Имя пользователя может содержать только буквы, цифры и символы @/./+/-/_",
                                 regex="^[\\w.@+-]+$",
