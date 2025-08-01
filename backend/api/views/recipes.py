@@ -14,7 +14,7 @@ from rest_framework.viewsets import ReadOnlyModelViewSet
 
 from api.filters import IngredientFilter, RecipeFilter
 from api.permissions import IsAuthorOrReadOnly
-from api.serializers.recepie import (
+from api.serializers.recipes import (
     FavoriteSerializer,
     IngredientSerializer,
     RecipeReadSerializer,

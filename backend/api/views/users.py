@@ -12,7 +12,7 @@ from rest_framework.permissions import (
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from api.serializers.recepie import SubscriptionSerializer
+from api.serializers.recipes import SubscriptionSerializer
 from api.serializers.users import (
     AvatarSerializer,
     SubscriptionCreateSerializer,
