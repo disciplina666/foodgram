@@ -12,12 +12,8 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'rtytfgujhkl3o207896tyguashj2(2)')
 
 DEBUG = os.environ.get('DEBUG') == 'True'
 
-ALLOWED_HOSTS = ['*']
 
-#Для прода
-'''
 ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
-'''
 
 
 INSTALLED_APPS = [
@@ -70,16 +66,6 @@ WSGI_APPLICATION = 'foodgram.wsgi.application'
 AUTH_USER_MODEL = 'users.User'
 
 
-# Для разработки (SQLite)
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
-
-# Для прода (PostgreSQL) - закомментировано
-"""
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
@@ -90,7 +76,7 @@ DATABASES = {
         "PORT": os.getenv("DB_PORT", 5432),
     }
 }
-"""
+
 
 AUTH_PASSWORD_VALIDATORS = [
     {
