@@ -1,4 +1,5 @@
 asgiref==3.9.1
+astroid==2.15.8
 certifi==2025.7.14
 cffi==1.17.1
 cfgv==3.4.0
@@ -9,6 +10,7 @@ cryptography==45.0.5
 defusedxml==0.7.1
 distlib==0.4.0
 Django==4.2
+django-admin-autocomplete-filter==0.7.1
 django-filter==2.4.0
 django-templated-mail==1.1.1
 djangorestframework==3.16.0
@@ -17,12 +19,17 @@ djoser==2.1.0
 drf-extra-fields==3.7.0
 filelock==3.18.0
 filetype==1.2.0
+flake8==6.1.0
+flake8-django==1.4
+gunicorn==20.1.0
 identify==2.6.12
 idna==3.10
 isort==6.0.1
 itypes==1.2.0
 Jinja2==3.1.6
+lazy-object-proxy==1.11.0
 MarkupSafe==3.0.2
+mccabe==0.7.0
 nodeenv==1.9.1
 oauthlib==3.3.1
 pillow==11.3.0
@@ -30,8 +37,11 @@ platformdirs==4.3.8
 pre_commit==4.2.0
 psycopg==3.2.9
 psycopg2-binary==2.9.10
+pycodestyle==2.11.1
 pycparser==2.22
+pyflakes==3.1.0
 PyJWT==2.10.1
+python-dotenv==0.17.0
 python3-openid==3.2.0
 pytz==2025.2
 PyYAML==6.0.2
@@ -45,5 +55,4 @@ typing_extensions==4.14.1
 uritemplate==4.2.0
 urllib3==2.5.0
 virtualenv==20.32.0
-gunicorn==20.1.0
-python-dotenv==0.17.0
+wrapt==1.17.2

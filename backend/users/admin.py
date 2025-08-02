@@ -10,6 +10,7 @@ class UserAdmin(BaseUserAdmin):
     list_display = (
         'id', 'username', 'email', 'first_name', 'last_name', 'is_staff'
     )
+    list_display_links = ['username', 'email']
     list_filter = ('is_staff', 'is_superuser', 'is_active')
     search_fields = ('username', 'email')
     ordering = ('username',)
@@ -49,5 +50,10 @@ class UserAdmin(BaseUserAdmin):
 @admin.register(Follow)
 class FollowAdmin(admin.ModelAdmin):
     list_display = ('id', 'user', 'following')
-    search_fields = ('user__username', 'following__username')
+    list_display_links = ['user', 'following']
     list_filter = ('user',)
+    autocomplete_fields = ['user', 'following']
+
+    def get_queryset(self, request):
+        queryset = super().get_queryset(request)
+        return queryset.select_related('user', 'following')
