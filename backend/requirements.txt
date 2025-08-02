@@ -10,7 +10,6 @@ cryptography==45.0.5
 defusedxml==0.7.1
 distlib==0.4.0
 Django==4.2
-django-admin-autocomplete-filter==0.7.1
 django-filter==2.4.0
 django-templated-mail==1.1.1
 djangorestframework==3.16.0

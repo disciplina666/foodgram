@@ -1,4 +1,3 @@
-from admin_auto_filters.filters import AutocompleteFilter
 from django.contrib import admin
 
 from .models import (
@@ -9,16 +8,6 @@ from .models import (
     ShoppingCart,
     Tag,
 )
-
-
-class AuthorFilter(AutocompleteFilter):
-    title = 'Автор'
-    field_name = 'author'
-
-
-class TagFilter(AutocompleteFilter):
-    title = 'Тег'
-    field_name = 'tags'
 
 
 @admin.register(Ingredient)
@@ -50,7 +39,7 @@ class RecipeAdmin(admin.ModelAdmin):
     )
     list_display_links = ['name', 'author']
     search_fields = ('name', 'author__username')
-    list_filter = (TagFilter, AuthorFilter)
+    list_filter = ('tags', 'author')
     autocomplete_fields = ['author', 'tags']
     inlines = (RecipeIngredientInline,)
     ordering = ('-id',)
